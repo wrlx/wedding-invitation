@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arya & Jinu — Wedding Invitation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose:        #c084a0;
+      --rose-light:  #e8c5d4;
+      --rose-pale:   #f9f0f4;
+      --sage:        #8aab8e;
+      --ivory:       #faf6f0;
+      --ivory-dark:  #ede4d8;
+      --brown:       #5c3d2e;
+      --text-soft:   #7a6058;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--ivory);
+      font-family: 'Jost', sans-serif;
+      color: var(--brown);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(192,132,160,0.13) 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 100%, rgba(138,171,142,0.11) 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(192,132,160,0.07) 0%, transparent 40%),
+        radial-gradient(ellipse at 0% 100%, rgba(138,171,142,0.07) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0;
+      font-size: 1.1rem;
+      animation: floatPetal linear infinite;
+      z-index: 0;
+    }
+    @keyframes floatPetal {
+      0%   { opacity: 0;   transform: translateY(-30px) rotate(0deg); }
+      8%   { opacity: 0.5; }
+      92%  { opacity: 0.2; }
+      100% { opacity: 0;   transform: translateY(105vh) rotate(400deg); }
+    }
+    @keyframes sway {
+      0%, 100% { transform: rotate(-4deg); }
+      50%       { transform: rotate(4deg); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; position: relative; z-index: 1; }
+    .screen.active { display: flex; animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1); }
+
+    /* ════════════════════════
+       WELCOME SCREEN
+    ════════════════════════ */
+    #welcome-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .welcome-floral {
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+      display: block;
+      animation: sway 4s ease-in-out infinite;
+    }
+    .welcome-eyebrow {
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 0.6rem;
+    }
+    .welcome-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-style: italic;
+      color: var(--brown);
+      margin-bottom: 0.4rem;
+    }
+    .welcome-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-style: italic;
+      color: var(--text-soft);
+      margin-bottom: 2.4rem;
+    }
+
+    .welcome-card {
+      background: white;
+      border: 1px solid var(--rose-pale);
+      border-top: 3px solid var(--rose);
+      border-radius: 3px;
+      padding: 2rem 2rem 1.8rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 6px 40px rgba(192,132,160,0.13), 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .welcome-card-label {
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 0.9rem;
+    }
+    .welcome-card input {
+      width: 100%;
+      background: var(--ivory);
+      border: 1px solid var(--ivory-dark);
+      border-radius: 2px;
+      padding: 0.85rem 1rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--brown);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      margin-bottom: 0.3rem;
+    }
+    .welcome-card input::placeholder { color: var(--text-soft); opacity: 0.5; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+    .welcome-card input:focus { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(192,132,160,0.13); }
+
+    .error-msg { font-size: 0.75rem; color: #c0604a; min-height: 1.2em; margin-bottom: 0.7rem; }
+
+    .btn-enter {
+      width: 100%;
+      padding: 0.9rem 2rem;
+      background: linear-gradient(135deg, var(--rose), #a8587c);
+      border: none;
+      border-radius: 2px;
+      color: white;
+      font-weight: 300;
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 20px rgba(192,132,160,0.38);
+    }
+    .btn-enter:hover { transform: translateY(-1px); box-shadow: 0 7px 28px rgba(192,132,160,0.48); }
+    .btn-enter:active { transform: translateY(0); }
+
+    /* ════════════════════════
+       INVITATION SCREEN
+    ════════════════════════ */
+    #invitation-screen {
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.2rem 4rem;
+      min-height: 100vh;
+    }
+
+    .floral-band {
+      font-size: 1.6rem;
+      letter-spacing: 0.5rem;
+      opacity: 0.6;
+      margin-bottom: 1.4rem;
+    }
+
+    /* ONE big card containing everything */
+    .invite-card {
+      width: 100%;
+      max-width: 680px;
+      background: white;
+      border-radius: 3px;
+      border: 1px solid rgba(192,132,160,0.18);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 16px 50px rgba(192,132,160,0.14), 0 40px 80px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    .card-ribbon {
+      height: 5px;
+      background: linear-gradient(90deg, var(--sage), var(--rose), #a85c7a, var(--rose), var(--sage));
+    }
+
+    /* Corner florals */
+    .corner-floral { position: absolute; font-size: 1.8rem; opacity: 0.15; pointer-events: none; }
+    .corner-floral.tl { top: 14px; left: 14px; }
+    .corner-floral.tr { top: 14px; right: 14px; transform: scaleX(-1); }
+    .corner-floral.bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+    .corner-floral.br { bottom: 14px; right: 14px; transform: scale(-1); }
+
+    /* ── Card sections ── */
+    .card-top {
+      padding: 2.8rem 3rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .invite-greeting {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      font-style: italic;
+      color: var(--rose);
+      margin-bottom: 1.6rem;
+    }
+    .invite-together {
+      font-weight: 500;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 0.5rem;
+    }
+    .invite-names {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--brown);
+    }
+    .invite-names .amp {
+      display: block;
+      font-style: italic;
+      font-size: 0.52em;
+      color: var(--rose);
+      line-height: 1.5;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 1.6rem 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192,132,160,0.3), transparent);
+    }
+    .divider-icon { color: var(--rose); font-size: 0.8rem; opacity: 0.55; }
+
+    .invite-request {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-soft);
+      line-height: 2;
+    }
+
+    /* Details band */
+    .card-details {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      background: var(--ivory);
+      border-top: 1px solid var(--ivory-dark);
+      border-bottom: 1px solid var(--ivory-dark);
+    }
+    .detail-block { padding: 1.4rem 1.6rem; text-align: center; }
+    .detail-label {
+      font-weight: 500;
+      font-size: 0.56rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 0.55rem;
+    }
+    .detail-value {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+      color: var(--brown);
+      line-height: 1.65;
+    }
+    .detail-sep { background: var(--ivory-dark); }
+
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.55rem;
+      color: var(--rose);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(192,132,160,0.32);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .map-link:hover { color: var(--brown); border-color: var(--brown); }
+
+    /* Calendar */
+    .card-calendar {
+      padding: 1.4rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--ivory-dark);
+    }
+    .calendar-label {
+      font-weight: 500;
+      font-size: 0.6rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      opacity: 0.65;
+      margin-bottom: 0.8rem;
+    }
+    .calendar-btns { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+    .btn-cal {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.52rem 1.1rem;
+      background: var(--ivory);
+      border: 1px solid var(--ivory-dark);
+      border-radius: 2px;
+      color: var(--text-soft);
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .btn-cal:hover { background: var(--rose-pale); border-color: var(--rose-light); color: var(--brown); }
+
+    /* ── RSVP — inside the card, clearly visible ── */
+    .card-rsvp {
+      padding: 2rem 2.5rem 2.5rem;
+      text-align: center;
+      background: white;
+    }
+    .rsvp-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-style: italic;
+      color: var(--brown);
+      margin-bottom: 0.4rem;
+    }
+    .rsvp-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--text-soft);
+      margin-bottom: 1.6rem;
+    }
+    .rsvp-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .btn-rsvp {
+      padding: 1rem 1rem;
+      border-radius: 2px;
+      font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.28s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      border: 1px solid;
+      line-height: 1.3;
+    }
+    .btn-rsvp .btn-icon { font-size: 1.4rem; }
+    .btn-rsvp .btn-label { font-size: 0.72rem; font-weight: 400; }
+    .btn-rsvp .btn-hint  { font-size: 0.58rem; letter-spacing: 0.1em; opacity: 0.7; font-weight: 300; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+
+    .btn-attend {
+      background: linear-gradient(145deg, var(--rose), #a8587c);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 18px rgba(192,132,160,0.38);
+    }
+    .btn-attend:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(192,132,160,0.5); }
+    .btn-attend:active { transform: translateY(0); }
+
+    .btn-decline {
+      background: white;
+      border-color: var(--ivory-dark);
+      color: var(--text-soft);
+    }
+    .btn-decline:hover { background: var(--rose-pale); border-color: var(--rose-light); color: var(--brown); }
+
+    /* ════════════════════════
+       THANK YOU SCREEN
+    ════════════════════════ */
+    #thankyou-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+    .ty-floral { font-size: 3.8rem; margin-bottom: 1.2rem; animation: sway 3s ease-in-out infinite; }
+    .ty-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-style: italic;
+      color: var(--brown);
+      margin-bottom: 0.8rem;
+    }
+    .ty-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), transparent);
+      margin: 1.2rem auto;
+    }
+    .ty-message {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      font-style: italic;
+      color: var(--text-soft);
+      max-width: 420px;
+      line-height: 1.9;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--brown);
+      color: var(--ivory);
+      font-weight: 300;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      padding: 0.7rem 1.5rem;
+      border-radius: 2px;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 540px) {
+      .card-top { padding: 2.2rem 1.4rem 1.6rem; }
+      .card-details { grid-template-columns: 1fr; }
+      .detail-sep { display: none; }
+      .card-rsvp { padding: 1.6rem 1.2rem 2rem; }
+      .rsvp-btns { grid-template-columns: 1fr; max-width: 320px; }
+      .corner-floral { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="petal" style="left:7%;animation-duration:13s;animation-delay:0s;">🌸</div>
+<div class="petal" style="left:23%;animation-duration:16s;animation-delay:4s;">🌿</div>
+<div class="petal" style="left:52%;animation-duration:12s;animation-delay:7s;">🌸</div>
+<div class="petal" style="left:76%;animation-duration:15s;animation-delay:2s;">🌿</div>
+<div class="petal" style="left:91%;animation-duration:14s;animation-delay:10s;">🌸</div>
+
+<!-- ══════ WELCOME ══════ -->
+<section id="welcome-screen" class="screen active">
+  <span class="welcome-floral">🌸</span>
+  <p class="welcome-eyebrow">A wedding invitation</p>
+  <h1 class="welcome-heading">Arya & Jinu</h1>
+  <p class="welcome-sub">are getting married</p>
+
+  <div class="welcome-card">
+    <p class="welcome-card-label">Please enter your name</p>
+    <input type="text" id="guest-name" placeholder="Your full name…" maxlength="60" />
+    <p class="error-msg" id="name-error"></p>
+    <button class="btn-enter" id="open-btn">Open My Invitation</button>
+  </div>
+</section>
+
+<!-- ══════ INVITATION ══════ -->
+<section id="invitation-screen" class="screen">
+  <div class="floral-band">🌿 🌸 🌿</div>
+
+  <div class="invite-card">
+    <div class="card-ribbon"></div>
+
+    <!-- Header -->
+    <div class="card-top">
+      <span class="corner-floral tl">🌸</span>
+      <span class="corner-floral tr">🌸</span>
+
+      <span class="invite-greeting" id="greeting-name">Dear Guest,</span>
+      <p class="invite-together">Together with our families</p>
+      <div class="invite-names">
+        Arya <span class="amp">& Jinu</span>
+      </div>
+
+      <div class="divider"><span class="divider-icon">✦</span></div>
+
+      <p class="invite-request">
+        joyfully request the honour of your presence<br/>
+        at the celebration of our marriage
+      </p>
+    </div>
+
+    <!-- Date & Venue -->
+    <div class="card-details">
+      <div class="detail-block">
+        <div class="detail-label">📅 Date & Time</div>
+        <div class="detail-value">Monday<br/>18th May, 2026<br/>11:30 AM</div>
+      </div>
+      <div class="detail-sep"></div>
+      <div class="detail-block">
+        <div class="detail-label">📍 Venue</div>
+        <div class="detail-value">Variyamparambath<br/>Kappikalam, Padinjarathara<br/>Wayanad</div>
+        <a href="https://maps.app.goo.gl/WWDSCzp17yjyLdpK7" target="_blank" class="map-link">View on Google Maps →</a>
+      </div>
+    </div>
+
+    <!-- Save the date -->
+    <div class="card-calendar">
+      <div class="calendar-label">Save the date on your calendar</div>
+      <div class="calendar-btns">
+        <a class="btn-cal" id="gcal-link" href="#" target="_blank">📅 Google Calendar</a>
+        <a class="btn-cal" id="ical-link" href="#" download="Arya_Jinu_Wedding.ics">🗓 Apple / Outlook</a>
+      </div>
+    </div>
+
+    <!-- RSVP — inside the card -->
+    <div class="card-rsvp">
+      <div class="corner-floral bl" style="position:relative;display:none;"></div>
+      <h3 class="rsvp-heading">Will you be joining us?</h3>
+      <p class="rsvp-sub">Kindly let us know so we can celebrate together</p>
+      <div class="rsvp-btns">
+        <button class="btn-rsvp btn-attend" id="btn-attend">
+          <span class="btn-icon">🥂</span>
+          <span class="btn-label">Joyfully Accepts</span>
+          <span class="btn-hint">Yes, I will attend</span>
+        </button>
+        <button class="btn-rsvp btn-decline" id="btn-decline">
+          <span class="btn-icon">🌸</span>
+          <span class="btn-label">Regretfully Declines</span>
+          <span class="btn-hint">Sorry, I can't make it</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ THANK YOU ══════ -->
+<section id="thankyou-screen" class="screen">
+  <div class="ty-floral" id="ty-floral">🌸</div>
+  <h2 class="ty-title" id="ty-title">Thank you!</h2>
+  <div class="ty-divider"></div>
+  <p class="ty-message" id="ty-message"></p>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpJhgVadO4uMvkbwhZgQKPg7le7cC6h5iI097yNsCz8edP-h14bPvbqaE9HOoN3uh5QA/exec';
+
+  var WEDDING = {
+    date:        '20260518',
+    timeStart:   '060000',
+    timeEnd:     '110000',
+    title:       "Arya & Jinu's Wedding",
+    location:    'Variyamparambath, Kappikalam, Padinjarathara, Wayanad',
+    description: 'Join us as we celebrate the union of Arya and Jinu.'
+  };
+
+  var guestName = '';
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  function buildCalendarLinks() {
+    var w = WEDDING;
+    var gcal = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text='     + encodeURIComponent(w.title)
+      + '&dates='    + w.date + 'T' + w.timeStart + 'Z/' + w.date + 'T' + w.timeEnd + 'Z'
+      + '&location=' + encodeURIComponent(w.location)
+      + '&details='  + encodeURIComponent(w.description);
+    document.getElementById('gcal-link').href = gcal;
+
+    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Wedding//EN\r\n'
+      + 'BEGIN:VEVENT\r\n'
+      + 'DTSTART:' + w.date + 'T' + w.timeStart + 'Z\r\n'
+      + 'DTEND:'   + w.date + 'T' + w.timeEnd   + 'Z\r\n'
+      + 'SUMMARY:' + w.title + '\r\n'
+      + 'LOCATION:' + w.location + '\r\n'
+      + 'DESCRIPTION:' + w.description + '\r\n'
+      + 'END:VEVENT\r\nEND:VCALENDAR';
+    document.getElementById('ical-link').href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+  }
+
+  function enterInvitation() {
+    var input = document.getElementById('guest-name').value.trim();
+    var errEl = document.getElementById('name-error');
+    if (!input) {
+      errEl.textContent = 'Please enter your name to open your invitation.';
+      document.getElementById('guest-name').focus();
+      return;
+    }
+    errEl.textContent = '';
+    guestName = input;
+    document.getElementById('greeting-name').textContent = 'Dear ' + guestName + ',';
+    buildCalendarLinks();
+    showScreen('invitation-screen');
+  }
+
+  function submitRSVP(status) {
+    var label     = status === 'attending' ? 'Attending' : 'Not Attending';
+    var timestamp = new Date().toLocaleString();
+    showToast('Sending your response…');
+    var url = APPS_SCRIPT_URL
+      + '?name='      + encodeURIComponent(guestName)
+      + '&status='    + encodeURIComponent(label)
+      + '&timestamp=' + encodeURIComponent(timestamp);
+    var img = new Image();
+    img.onload = img.onerror = function() { showThankYou(status); };
+    img.src = url;
+  }
+
+  function showThankYou(status) {
+    if (status === 'attending') {
+      document.getElementById('ty-floral').textContent  = '🥂';
+      document.getElementById('ty-title').textContent   = "We can't wait to see you!";
+      document.getElementById('ty-message').textContent =
+        'Thank you, ' + guestName + '. Your presence will make our day even more special. See you on the 18th of May!';
+    } else {
+      document.getElementById('ty-floral').textContent  = '🌸';
+      document.getElementById('ty-title').textContent   = "We'll miss you.";
+      document.getElementById('ty-message').textContent =
+        'Thank you for letting us know, ' + guestName + '. We\'ll keep you in our hearts as we celebrate this special day.';
+    }
+    showScreen('thankyou-screen');
+  }
+
+  document.getElementById('open-btn').addEventListener('click', enterInvitation);
+  document.getElementById('guest-name').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { enterInvitation(); }
+  });
+  document.getElementById('btn-attend').addEventListener('click', function() { submitRSVP('attending'); });
+  document.getElementById('btn-decline').addEventListener('click', function() { submitRSVP('declining'); });
+</script>
+</body>
+</html>
